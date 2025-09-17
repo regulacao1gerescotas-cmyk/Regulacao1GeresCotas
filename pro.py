@@ -323,12 +323,15 @@ if uploaded_file_60 is not None and uploaded_file_40 is not None:
                     # --- EXIBIÇÃO E DOWNLOADS ---
                     st.markdown("---")
                     st.header("Resultado Consolidado da Distribuição de Cotas")
-                    st.dataframe(df_final_sorted)
+                    
+                    # >>>>> ALTERAÇÃO AQUI: Filtra o dataframe apenas para exibição em tela <<<<<
+                    df_para_exibir = df_final_sorted[df_final_sorted['Cota Total'] > 0]
+                    st.dataframe(df_para_exibir)
 
                     st.markdown("---")
                     st.header("Downloads")
                     
-                    # Preparar arquivos para download
+                    # Preparar arquivos para download (usa o dataframe completo, sem o filtro de 'Cota Total > 0')
                     csv_final = df_final_sorted.to_csv(index=False).encode('utf-8')
                     csv_distribuicao_60_detalhado = df_distribuicao_60_detalhado.to_csv(index=False).encode('utf-8')
                     csv_filas_combinadas = df_filas_combinadas.to_csv(index=False).encode('utf-8')
