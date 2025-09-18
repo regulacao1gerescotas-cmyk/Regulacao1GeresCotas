@@ -106,7 +106,8 @@ unidades_permitidas = [
     "PRESIDIO JUIZ ANTONIO LUIZ DE BARROS - PJALLB - RECIFE",
     "SECRETARIA MUNICIPAL DE SAUDE DE SAO LOURENCO DA MATA",
     "PVSA - PRESÍDIO DE VITORIA DE SANTO ANTAO",
-    "SECRETARIA DE SAUDE DA VITORIA DE SANTO ANTAO"
+    "SECRETARIA DE SAUDE DA VITORIA DE SANTO ANTAO",
+    "UNIDADE BASICA DE SAUDE PRISIONAL PLL - RECIFE",
 ]
 unidades_permitidas_norm = set(normalize_text(u) for u in unidades_permitidas)
 
@@ -122,9 +123,10 @@ mapa_agrupamento = {
     "US 275 CEST RECIFE DR EDSON HATEN - RECIFE": "Recife", "US 217 CENTRO MEDICO SEN JOSE ERMIRIO DE MORAES - RECIFE": "Recife",
     "US 169 POLICLINICA AMAURY COUTINHO -CAMPINA BARRETO - RECIFE": "Recife", "US 101 POLICLINICA PROF WALDEMAR DE OLIVEIRA - RECIFE": "Recife",
     "US 128 POLICLINICA LESSA DE ANDRADE - RECIFE": "Recife", "US 141 SECRETARIA MUNICIPAL DE SAUDE DO RECIFE": "Recife",
-    "US 144 POLICLINICA CLEMENTINO FRAGA - RECIFE": "Recife", "US 153 POLICLINICA ARNALDO MARQUES - RECIFE": "Recife",
-    "US 159 POLICLINICA AGAMENON MAGALHAES - AFOGADOS - RECIFE": "Recife", "US 160 POLICLINICA GOUVEIA DE BARROS - RECIFE": "Recife",
-    "US 162 POLICLINICA ALBERT SABIN - RECIFE": "Recife", "US 163 UNIDADE PEDIATRICA HELENA MOURA - RECIFE": "Recife",
+    "US 144 POLICLINICA CLEMENTINO FRAGA - RECIFE": "Recife",
+    "US 153 POLICLINICA ARNALDO MARQUES - RECIFE": "Recife", "US 159 POLICLINICA AGAMENON MAGALHAES - AFOGADOS - RECIFE": "Recife",
+    "US 160 POLICLINICA GOUVEIA DE BARROS - RECIFE": "Recife", "US 162 POLICLINICA ALBERT SABIN - RECIFE": "Recife",
+    "US 163 UNIDADE PEDIATRICA HELENA MOURA - RECIFE": "Recife",
     "POLICLINICA CONEGO PEDRO DE SOUZA LEAO - JABOATAO": "Jaboatão dos Guararapes", "POLICLINICA DA CRIANCA E DO ADOLESCENTE": "Jaboatão dos Guararapes",
     "POLICLINICA JOSE CARNEIRO LINS - JABOATAO": "Jaboatão dos Guararapes", "POLICLINICA LEOPOLDINA LEAO TENORIO - JABOATAO": "Jaboatão dos Guararapes",
     "POLICLINICA MANOEL CALHEIROS CURADO IV - JABOATAO": "Jaboatão dos Guararapes", "POLICLINICA MARIINHA MELO - JABOATAO": "Jaboatão dos Guararapes",
@@ -233,7 +235,7 @@ with col1:
     )
 with col2:
     uploaded_file_40 = st.file_uploader(
-        "2. Arquivo para distribuição de 40% (fila resumida por unidade)",
+        "2. Arquivo para distribuição de 40% (fila resumida por unidade com 'fila' para cálculo e 'real' para resumo)",
         type=["csv"],
         key="arquivo_fila"
     )
@@ -248,6 +250,7 @@ if uploaded_file_60 is not None and uploaded_file_40 is not None:
         if not required_cols_60.issubset(df_60_base.columns):
             st.error("Arquivo para 60% não contém as colunas esperadas: 'Unidade solicitante', 'Data da solicitacao', 'Prioridade'.")
         else:
+            df_60_base['unidade solicitante'] = df_60_base['unidade solicitante'].astype(str) # Garante que a coluna é string
             df_60_base['unidade_norm'] = df_60_base['unidade solicitante'].apply(normalize_text)
             df_60_filtrado = df_60_base[df_60_base['unidade_norm'].isin(unidades_permitidas_norm)].copy()
             
@@ -260,15 +263,21 @@ if uploaded_file_60 is not None and uploaded_file_40 is not None:
             # --- ETAPA 2: Processamento da distribuição de 40% ---
             df_40_base = pd.read_csv(uploaded_file_40)
             df_40_base = normalizar_colunas(df_40_base)
-            if 'fila' not in df_40_base.columns or 'unidade solicitante' not in df_40_base.columns:
-                st.error("Arquivo para 40% deve conter as colunas: 'Unidade solicitante' e 'Fila'.")
+            
+            # Verificar se ambas as colunas 'fila' e 'real' existem
+            if 'fila' not in df_40_base.columns or 'real' not in df_40_base.columns or 'unidade solicitante' not in df_40_base.columns:
+                st.error("Arquivo para 40% deve conter as colunas: 'Unidade solicitante', 'Fila' (para cálculo) e 'Real' (para resumo).")
             else:
+                # Converter as colunas para numérico
                 df_40_base['fila'] = pd.to_numeric(df_40_base['fila'], errors='coerce').fillna(0).astype(int)
-                df_40_base['unidade_original'] = df_40_base['unidade solicitante']
+                df_40_base['real'] = pd.to_numeric(df_40_base['real'], errors='coerce').fillna(0).astype(int)
+                df_40_base['unidade_original'] = df_40_base['unidade solicitante'].astype(str) # Garante que a coluna é string
                 df_40_base['unidade_norm'] = df_40_base['unidade solicitante'].apply(normalize_text)
                 df_40_filtrado = df_40_base[df_40_base['unidade_norm'].isin(unidades_permitidas_norm)].copy()
 
                 df_40_filtrado['agrupamento'] = df_40_filtrado['unidade_norm'].map(mapa_agrupamento_norm).fillna("SEM AGRUPAMENTO")
+                
+                # Agrupar e somar pela COLUNA 'FILA' para a proporção da alocação
                 df_grouped = df_40_filtrado.groupby('agrupamento', as_index=False)['fila'].sum().rename(columns={'fila': 'fila_total'})
                 
                 if df_grouped['fila_total'].sum() > 0:
@@ -280,22 +289,34 @@ if uploaded_file_60 is not None and uploaded_file_40 is not None:
                         agrup = row['agrupamento']
                         vagas_para_agrup = int(row['vagas alocadas'])
                         subset = df_40_filtrado[df_40_filtrado['agrupamento'] == agrup].copy()
-                        fila_por_unidade = subset.groupby('unidade_original', as_index=False)['fila'].sum().rename(columns={'fila': 'fila_unidade'})
                         
+                        # Usar a COLUNA 'FILA' para a alocação proporcional dentro do agrupamento
+                        fila_por_unidade_calculo = subset.groupby('unidade_original', as_index=False)['fila'].sum().rename(columns={'fila': 'fila_unidade_calculo'})
+                        
+                        # E pegar o valor da COLUNA 'REAL' para o resumo/exibição
+                        real_por_unidade_resumo = subset.groupby('unidade_original', as_index=False)['real'].sum().rename(columns={'real': 'real_unidade_resumo'})
+                        
+                        df_temp = pd.merge(fila_por_unidade_calculo, real_por_unidade_resumo, on='unidade_original', how='left')
+
                         if vagas_para_agrup > 0:
-                            allocs = proportional_allocation(fila_por_unidade['fila_unidade'].tolist(), vagas_para_agrup)
-                            fila_por_unidade['vagas_alocadas'] = allocs
+                            allocs = proportional_allocation(df_temp['fila_unidade_calculo'].tolist(), vagas_para_agrup)
+                            df_temp['vagas_alocadas'] = allocs
                         else:
-                            fila_por_unidade['vagas_alocadas'] = 0
+                            df_temp['vagas_alocadas'] = 0
                         
-                        detalhes.append(fila_por_unidade)
+                        detalhes.append(df_temp)
 
                     df_detalhado_40 = pd.concat(detalhes, ignore_index=True)
+                    
+                    # No resumo, renomear 'real_unidade_resumo' para ser a fila de 40%
                     resumo_40_final = df_detalhado_40.rename(columns={
                         'unidade_original': 'Unidade Solicitante',
-                        'fila_unidade': 'Fila 40% (Valor Informado)',
+                        'real_unidade_resumo': 'Fila 40% (Valor Real)', # Usando a coluna 'real' para o resumo
                         'vagas_alocadas': 'Cota 40%'
                     })
+                    # Selecionar apenas as colunas relevantes para o resumo final e garantir que 'fila_unidade_calculo' não apareça indevidamente
+                    resumo_40_final = resumo_40_final[['Unidade Solicitante', 'Fila 40% (Valor Real)', 'Cota 40%']]
+
 
                     # --- ETAPA 3: Consolidação dos Resultados ---
                     df_final = pd.merge(
@@ -311,20 +332,21 @@ if uploaded_file_60 is not None and uploaded_file_40 is not None:
                     df_final_sorted = df_final.sort_values(by="Cota Total", ascending=False)
                     
                     # --- ETAPA 4: Geração do Arquivo de Filas Combinadas ---
+                    # Merge para as filas, usando 'Fila 40% (Valor Real)' do resumo_40_final
                     df_filas_combinadas = pd.merge(
                         resumo_60_final[['Unidade Solicitante', 'Fila 60% (Nº de Solicitações)']],
-                        resumo_40_final[['Unidade Solicitante', 'Fila 40% (Valor Informado)']],
+                        resumo_40_final[['Unidade Solicitante', 'Fila 40% (Valor Real)']],
                         on='Unidade Solicitante',
                         how='outer'
                     ).fillna(0)
                     df_filas_combinadas['Fila 60% (Nº de Solicitações)'] = df_filas_combinadas['Fila 60% (Nº de Solicitações)'].astype(int)
-                    df_filas_combinadas['Fila 40% (Valor Informado)'] = df_filas_combinadas['Fila 40% (Valor Informado)'].astype(int)
+                    df_filas_combinadas['Fila 40% (Valor Real)'] = df_filas_combinadas['Fila 40% (Valor Real)'].astype(int)
 
                     # --- EXIBIÇÃO E DOWNLOADS ---
                     st.markdown("---")
                     st.header("Resultado Consolidado da Distribuição de Cotas")
                     
-                    # >>>>> ALTERAÇÃO AQUI: Filtra o dataframe apenas para exibição em tela <<<<<
+                    # Filtra o dataframe apenas para exibição em tela
                     df_para_exibir = df_final_sorted[df_final_sorted['Cota Total'] > 0]
                     st.dataframe(df_para_exibir)
 
@@ -359,7 +381,7 @@ if uploaded_file_60 is not None and uploaded_file_40 is not None:
                             mime="text/csv"
                         )
                 else:
-                    st.error("A soma das filas no arquivo de 40% é 0. Não é possível distribuir as cotas desta etapa.")
+                    st.error("A soma da coluna 'Fila' no arquivo de 40% é 0. Não é possível distribuir as cotas desta etapa.")
     except Exception as e:
         st.error(f"Ocorreu um erro durante o processamento. Verifique os arquivos e os dados inseridos. Detalhe do erro: {e}")
 else:
