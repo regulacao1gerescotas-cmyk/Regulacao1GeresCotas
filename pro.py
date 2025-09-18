@@ -154,7 +154,7 @@ mapa_agrupamento = {
     "SECRETARIA MUNICIPAL DE SAUDE DE PAULISTA": "SECRETARIA MUNICIPAL DE SAUDE DE PAULISTA",
     "SECRETARIA MUNICIPAL DE SAUDE DE POMBOS": "SECRETARIA MUNICIPAL DE SAUDE DE POMBOS",
     "CPFR - COLONIA PENAL FEMININA DO RECIFE - BOM PASTOR": "CPFR - COLONIA PENAL FEMININA DO RECIFE - BOM PASTOR",
-    "PRESIDIO ASP MARCELO FRANCISCO ARAUJO - PAMFA": "PRESIDIO ASP MARCELO FRANCISCO ARAUJO - PAMFA",
+    "PRESIDIO ASP MARCELo FRANCISCO ARAUJO - PAMFA": "PRESIDIO ASP MARCELO FRANCISCO ARAUJO - PAMFA",
     "PRESIDIO FREI DAMIAO DE BOZZANO - PFDB - RECIFE": "PRESIDIO FREI DAMIAO DE BOZZANO - PFDB - RECIFE",
     "PRESIDIO JUIZ ANTONIO LUIZ DE BARROS - PJALLB - RECIFE": "PRESIDIO JUIZ ANTONIO LUIZ DE BARROS - PJALLB - RECIFE",
     "SECRETARIA MUNICIPAL DE SAUDE DE SAO LOURENCO DA MATA": "SECRETARIA MUNICIPAL DE SAUDE DE SAO LOURENCO DA MATA",
@@ -219,7 +219,7 @@ with col2_logo:
     # ALTERAÇÃO AQUI: Carrega a imagem do arquivo local "logo.png"
     # Certifique-se de que o arquivo 'logo.png' está na mesma pasta do script.
     try:
-        st.image("logo.png", width=150)
+        st.image("logo.png", width=600) # <--- ALTERAÇÃO AQUI
     except Exception as e:
         st.warning("Não foi possível carregar a imagem 'logo.png'. Certifique-se de que ela está na mesma pasta do script.")
 
@@ -400,3 +400,4 @@ if uploaded_file_60 is not None and uploaded_file_40 is not None:
         st.error(f"Ocorreu um erro durante o processamento. Verifique os arquivos e os dados inseridos. Detalhe do erro: {e}")
 else:
     st.warning("Por favor, carregue ambos os arquivos CSV para iniciar o processamento.")
+
