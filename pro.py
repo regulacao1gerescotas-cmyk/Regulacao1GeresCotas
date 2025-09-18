@@ -142,7 +142,7 @@ mapa_agrupamento = {
     "HOSPITAL SAO LUCAS - FERNANDO DE NORONHA": "HOSPITAL SAO LUCAS - FERNANDO DE NORONHA",
     "SECRETARIA MUNICIPAL DE SAUDE DE GLORIA DO GOITA": "SECRETARIA MUNICIPAL DE SAUDE DE GLORIA DO GOITA",
     "HOSPITAL DE CUSTODIA E TRATAMENTO PSIQUIATRICO - ITAMARACA": "HOSPITAL DE CUSTODIA E TRATAMENTO PSIQUIATRICO - ITAMARACA",
-    "SECRETARIA MUNICIPAL DE SAUDE DA ILHA DE ITAMARACA": "SECRETaria municipal de saude da ilha de itamaraca",
+    "SECRETARIA MUNICIPAL DE SAUDE DA ILHA DE ITAMARACA": "SECRETARIA MUNICIPAL DE SAUDE DA ILHA DE ITAMARACA",
     "PENITENCIÁRIA AGRO - INDUSTRIAL SÃO JOÃO - PAISJ": "PENITENCIÁRIA AGRO - INDUSTRIAL SÃO JOÃO - PAISJ",
     "UNIDADE BASICA DE SAUDE PRISIONAL PAISJ - ILHA DE ITAMARACA": "UNIDADE BASICA DE SAUDE PRISIONAL PAISJ - ILHA DE ITAMARACA",
     "PPBC-PENITENCIÁRIA PROF. BARRETO CAMPELO": "PPBC-PENITENCIÁRIA PROF. BARRETO CAMPELO",
@@ -154,7 +154,7 @@ mapa_agrupamento = {
     "SECRETARIA MUNICIPAL DE SAUDE DE PAULISTA": "SECRETARIA MUNICIPAL DE SAUDE DE PAULISTA",
     "SECRETARIA MUNICIPAL DE SAUDE DE POMBOS": "SECRETARIA MUNICIPAL DE SAUDE DE POMBOS",
     "CPFR - COLONIA PENAL FEMININA DO RECIFE - BOM PASTOR": "CPFR - COLONIA PENAL FEMININA DO RECIFE - BOM PASTOR",
-    "PRESIDIO ASP MARCELo francisco araujo - pamfa": "presidio asp marcelo francisco araujo - pamfa",
+    "PRESIDIO ASP MARCELO FRANCISCO ARAUJO - PAMFA": "PRESIDIO ASP MARCELO FRANCISCO ARAUJO - PAMFA",
     "PRESIDIO FREI DAMIAO DE BOZZANO - PFDB - RECIFE": "PRESIDIO FREI DAMIAO DE BOZZANO - PFDB - RECIFE",
     "PRESIDIO JUIZ ANTONIO LUIZ DE BARROS - PJALLB - RECIFE": "PRESIDIO JUIZ ANTONIO LUIZ DE BARROS - PJALLB - RECIFE",
     "SECRETARIA MUNICIPAL DE SAUDE DE SAO LOURENCO DA MATA": "SECRETARIA MUNICIPAL DE SAUDE DE SAO LOURENCO DA MATA",
@@ -208,7 +208,21 @@ def distribuir_vagas_60(df, vagas_totais):
 
 # ---------------- NOVA INTERFACE DO STREAMLIT ----------------
 st.set_page_config(layout="wide")
-st.title("Distribuição Unificada de Cotas - I GERES")
+
+# --- TÍTULO E LOGO ---
+col1_title, col2_logo = st.columns([4, 1]) 
+
+with col1_title:
+    st.title("Distribuição Unificada de Cotas - I GERES")
+
+with col2_logo:
+    # ALTERAÇÃO AQUI: Carrega a imagem do arquivo local "logo.png"
+    # Certifique-se de que o arquivo 'logo.png' está na mesma pasta do script.
+    try:
+        st.image("logo.png", width=150)
+    except Exception as e:
+        st.warning("Não foi possível carregar a imagem 'logo.png'. Certifique-se de que ela está na mesma pasta do script.")
+
 
 # --- ENTRADA ÚNICA ---
 total_cotas = st.number_input(
@@ -386,4 +400,3 @@ if uploaded_file_60 is not None and uploaded_file_40 is not None:
         st.error(f"Ocorreu um erro durante o processamento. Verifique os arquivos e os dados inseridos. Detalhe do erro: {e}")
 else:
     st.warning("Por favor, carregue ambos os arquivos CSV para iniciar o processamento.")
-
