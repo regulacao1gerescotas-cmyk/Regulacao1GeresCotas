@@ -159,7 +159,7 @@ mapa_agrupamento = {
     "PRESIDIO JUIZ ANTONIO LUIZ DE BARROS - PJALLB - RECIFE": "PRESIDIO JUIZ ANTONIO LUIZ DE BARROS - PJALLB - RECIFE",
     "SECRETARIA MUNICIPAL DE SAUDE DE SAO LOURENCO DA MATA": "SECRETARIA MUNICIPAL DE SAUDE DE SAO LOURENCO DA MATA",
     "PVSA - PRESÍDIO DE VITORIA DE SANTO ANTAO": "PVSA - PRESÍDIO DE VITORIA DE SANTO ANTAO",
-    "SECRETARIA DE SAUDE DA VITORIA DE SANTO ANTAO": "SECRETARIA DE SAUDE DA VITORIA DE SANTO ANTAO",
+    "SECRETARIA DE SAUDE DA VITORIA DE SANTO ANTAO": "SECRETaria de SAUDE DA VITORIA DE SANTO ANTAO",
     "UNIDADE BASICA DE SAUDE PRISIONAL PLL - RECIFE": "UNIDADE BASICA DE SAUDE PRISIONAL PLL - RECIFE",
 }
 mapa_agrupamento_norm = {normalize_text(k): v for k, v in mapa_agrupamento.items()}
@@ -209,7 +209,7 @@ def distribuir_vagas_60(df, vagas_totais):
 # ---------------- NOVA INTERFACE DO STREAMLIT ----------------
 st.set_page_config(layout="wide")
 
-# --- CSS PERSONALIZADO (VERSÃO CORRIGIDA) ---
+# --- CSS PERSONALIZADO (NOVA SEÇÃO) ---
 st.markdown("""
 <style>
     /* Importa a fonte Montserrat do Google Fonts */
@@ -219,44 +219,30 @@ st.markdown("""
     Se você tivesse os arquivos da fonte 'Cocomat Pro', você os carregaria assim:
     @font-face {
         font-family: 'Cocomat Pro';
-        src: url('caminho/para/cocomat-pro.woff2') format('woff2');
+        src: url('caminho/para/seu/arquivo/cocomat-pro.woff2') format('woff2');
         font-weight: normal;
         font-style: normal;
     }
-    E substituiria 'Montserrat' por 'Cocomat Pro' abaixo.
     */
 
-    /* Aplica a fonte a todo o aplicativo para garantir consistência */
-    html, body, [class*="st-"], [class*="css-"] {
-        font-family: 'Montserrat', sans-serif;
+    /* Cor de fundo principal da página */
+    .main > div {
+        background-color: #A4C4EA;
     }
 
-    /* Cor de fundo principal da página - seletor mais específico e !important */
-    [data-testid="stAppViewContainer"] > .main {
-        background-color: #A4C4EA !important;
-    }
-
-    /* Estilo do Título Principal - garantindo a fonte e o peso */
+    /* Estilo do Título Principal */
     h1 {
-        font-family: 'Montserrat', sans-serif !important;
-        font-weight: 700 !important; /* Negrito */
-        color: #1E3A5F; /* Cor mais escura para melhor contraste no fundo azul */
+        font-family: 'Montserrat', sans-serif; /* Altere para 'Cocomat Pro' se você carregou a fonte */
+        font-weight: 700; /* Deixa o título em negrito */
     }
 
-    /* Estilo para a caixa de número e caixas de upload - com !important */
+    /* Estilo para a caixa de número e caixas de upload */
     div[data-testid="stNumberInput"],
     section[data-testid="stFileUploader"] {
-        background-color: #D9E5F7 !important;
-        border: 1px solid #B0C4DE; /* Borda sutil para definir a área */
-        padding: 20px !important;
-        border-radius: 10px !important;
-    }
-
-    /* Ajuste de cor de texto dentro dos widgets para melhor leitura */
-    div[data-testid="stNumberInput"] label,
-    section[data-testid="stFileUploader"] label {
-        color: #1E3A5F !important;
-        font-weight: bold !important;
+        background-color: #D9E5F7;
+        border: 1px solid #D9E5F7;
+        padding: 15px;
+        border-radius: 10px;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -270,6 +256,7 @@ with col1_title:
 
 with col2_logo:
     try:
+        # Aumentei a largura da logo para 600
         st.image("logo.png", width=600) 
     except Exception as e:
         st.warning("Não foi possível carregar a imagem 'logo.png'. Certifique-se de que ela está na mesma pasta do script.")
@@ -450,4 +437,4 @@ if uploaded_file_60 is not None and uploaded_file_40 is not None:
     except Exception as e:
         st.error(f"Ocorreu um erro durante o processamento. Verifique os arquivos e os dados inseridos. Detalhe do erro: {e}")
 else:
-    st.warning("Por favor, carregue ambos os arquivos CSV para iniciar o processamento.")```
+    st.warning("Por favor, carregue ambos os arquivos CSV para iniciar o processamento.")
