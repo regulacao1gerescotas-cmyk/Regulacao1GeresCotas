@@ -229,13 +229,13 @@ st.header("Carregamento de Arquivos")
 col1, col2 = st.columns(2)
 with col1:
     uploaded_file_60 = st.file_uploader(
-        "1. Arquivo para distribuição de 60% (lista de solicitações)",
+        "1. Arquivo para distribuição de 60%",
         type=["csv"],
         key="arquivo_solicitacoes"
     )
 with col2:
     uploaded_file_40 = st.file_uploader(
-        "2. Arquivo para distribuição de 40% (fila resumida por unidade com 'fila' para cálculo e 'real' para resumo)",
+        "2. Arquivo para distribuição de 40%",
         type=["csv"],
         key="arquivo_fila"
     )
@@ -386,3 +386,4 @@ if uploaded_file_60 is not None and uploaded_file_40 is not None:
         st.error(f"Ocorreu um erro durante o processamento. Verifique os arquivos e os dados inseridos. Detalhe do erro: {e}")
 else:
     st.warning("Por favor, carregue ambos os arquivos CSV para iniciar o processamento.")
+
