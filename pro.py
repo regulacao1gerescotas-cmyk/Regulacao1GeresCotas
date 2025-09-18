@@ -219,7 +219,7 @@ with col2_logo:
     # ALTERAÇÃO AQUI: Carrega a imagem do arquivo local "logo.png"
     # Certifique-se de que o arquivo 'logo.png' está na mesma pasta do script.
     try:
-        st.image("logo.png", width=600) # <--- ALTERAÇÃO AQUI
+        st.image("logo.png", width=750) # <--- ALTERAÇÃO AQUI
     except Exception as e:
         st.warning("Não foi possível carregar a imagem 'logo.png'. Certifique-se de que ela está na mesma pasta do script.")
 
@@ -400,4 +400,5 @@ if uploaded_file_60 is not None and uploaded_file_40 is not None:
         st.error(f"Ocorreu um erro durante o processamento. Verifique os arquivos e os dados inseridos. Detalhe do erro: {e}")
 else:
     st.warning("Por favor, carregue ambos os arquivos CSV para iniciar o processamento.")
+
 
