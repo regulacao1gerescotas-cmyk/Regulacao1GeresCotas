@@ -154,12 +154,12 @@ mapa_agrupamento = {
     "SECRETARIA MUNICIPAL DE SAUDE DE PAULISTA": "SECRETARIA MUNICIPAL DE SAUDE DE PAULISTA",
     "SECRETARIA MUNICIPAL DE SAUDE DE POMBOS": "SECRETARIA MUNICIPAL DE SAUDE DE POMBOS",
     "CPFR - COLONIA PENAL FEMININA DO RECIFE - BOM PASTOR": "CPFR - COLONIA PENAL FEMININA DO RECIFE - BOM PASTOR",
-    "PRESIDIO ASP MARCELo FRANCISCO ARAUJO - PAMFA": "PRESIDIO ASP MARCELO FRANCISCO ARAUJO - PAMFA",
+    "PRESIDIO ASP MARCELO FRANCISCO ARAUJO - PAMFA": "PRESIDIO ASP MARCELO FRANCISCO ARAUJO - PAMFA",
     "PRESIDIO FREI DAMIAO DE BOZZANO - PFDB - RECIFE": "PRESIDIO FREI DAMIAO DE BOZZANO - PFDB - RECIFE",
     "PRESIDIO JUIZ ANTONIO LUIZ DE BARROS - PJALLB - RECIFE": "PRESIDIO JUIZ ANTONIO LUIZ DE BARROS - PJALLB - RECIFE",
     "SECRETARIA MUNICIPAL DE SAUDE DE SAO LOURENCO DA MATA": "SECRETARIA MUNICIPAL DE SAUDE DE SAO LOURENCO DA MATA",
     "PVSA - PRESÍDIO DE VITORIA DE SANTO ANTAO": "PVSA - PRESÍDIO DE VITORIA DE SANTO ANTAO",
-    "SECRETARIA DE SAUDE DA VITORIA DE SANTO ANTAO": "SECRETARIA DE SAUDE DA VITORIA DE SANTO ANTAO",
+    "SECRETARIA DE SAUDE DA VITORIA DE SANTO ANTAO": "SECRETaria de SAUDE DA VITORIA DE SANTO ANTAO",
     "UNIDADE BASICA DE SAUDE PRISIONAL PLL - RECIFE": "UNIDADE BASICA DE SAUDE PRISIONAL PLL - RECIFE",
 }
 mapa_agrupamento_norm = {normalize_text(k): v for k, v in mapa_agrupamento.items()}
@@ -209,6 +209,45 @@ def distribuir_vagas_60(df, vagas_totais):
 # ---------------- NOVA INTERFACE DO STREAMLIT ----------------
 st.set_page_config(layout="wide")
 
+# --- CSS PERSONALIZADO (NOVA SEÇÃO) ---
+st.markdown("""
+<style>
+    /* Importa a fonte Montserrat do Google Fonts */
+    @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
+
+    /* 
+    Se você tivesse os arquivos da fonte 'Cocomat Pro', você os carregaria assim:
+    @font-face {
+        font-family: 'Cocomat Pro';
+        src: url('caminho/para/seu/arquivo/cocomat-pro.woff2') format('woff2');
+        font-weight: normal;
+        font-style: normal;
+    }
+    */
+
+    /* Cor de fundo principal da página */
+    .main > div {
+        background-color: #A4C4EA;
+    }
+
+    /* Estilo do Título Principal */
+    h1 {
+        font-family: 'Montserrat', sans-serif; /* Altere para 'Cocomat Pro' se você carregou a fonte */
+        font-weight: 700; /* Deixa o título em negrito */
+    }
+
+    /* Estilo para a caixa de número e caixas de upload */
+    div[data-testid="stNumberInput"],
+    section[data-testid="stFileUploader"] {
+        background-color: #D9E5F7;
+        border: 1px solid #D9E5F7;
+        padding: 15px;
+        border-radius: 10px;
+    }
+</style>
+""", unsafe_allow_html=True)
+
+
 # --- TÍTULO E LOGO ---
 col1_title, col2_logo = st.columns([4, 1]) 
 
@@ -216,10 +255,9 @@ with col1_title:
     st.title("Distribuição Unificada de Cotas - I GERES")
 
 with col2_logo:
-    # ALTERAÇÃO AQUI: Carrega a imagem do arquivo local "logo.png"
-    # Certifique-se de que o arquivo 'logo.png' está na mesma pasta do script.
     try:
-        st.image("logo.png", width=750) # <--- ALTERAÇÃO AQUI
+        # Aumentei a largura da logo para 600
+        st.image("logo.png", width=600) 
     except Exception as e:
         st.warning("Não foi possível carregar a imagem 'logo.png'. Certifique-se de que ela está na mesma pasta do script.")
 
@@ -400,5 +438,3 @@ if uploaded_file_60 is not None and uploaded_file_40 is not None:
         st.error(f"Ocorreu um erro durante o processamento. Verifique os arquivos e os dados inseridos. Detalhe do erro: {e}")
 else:
     st.warning("Por favor, carregue ambos os arquivos CSV para iniciar o processamento.")
-
-
