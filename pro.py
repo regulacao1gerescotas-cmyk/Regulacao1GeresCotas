@@ -239,8 +239,8 @@ st.markdown("""
     /* Estilo para a caixa de número e caixas de upload */
     div[data-testid="stNumberInput"],
     section[data-testid="stFileUploader"] {
-        background-color: ##A3C1EF;
-        border: 1px solid ##A3C1EF;
+        background-color: #769AD4;
+        border: 1px solid #769AD4;
         padding: 15px;
         border-radius: 10px;
     }
@@ -438,4 +438,5 @@ if uploaded_file_60 is not None and uploaded_file_40 is not None:
         st.error(f"Ocorreu um erro durante o processamento. Verifique os arquivos e os dados inseridos. Detalhe do erro: {e}")
 else:
     st.warning("Por favor, carregue ambos os arquivos CSV para iniciar o processamento.")
+
 
